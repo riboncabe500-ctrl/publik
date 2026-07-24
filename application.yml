@@ -1,0 +1,82 @@
+server:
+  port: ${SERVER_PORT:8080}
+  address: 0.0.0.0
+  ssl:
+    enabled: false
+
+lavalink:
+  server:
+    password: ${LAVALINK_SERVER_PASSWORD:youshallnotpass}
+    sources:
+      youtube: ${LAVALINK_SERVER_SOURCES_YOUTUBE:true}
+      bandcamp: ${LAVALINK_SERVER_SOURCES_BANDCAMP:true}
+      soundcloud: ${LAVALINK_SERVER_SOURCES_SOUNDCLOUD:true}
+      twitch: ${LAVALINK_SERVER_SOURCES_TWITCH:true}
+      vimeo: ${LAVALINK_SERVER_SOURCES_VIMEO:true}
+      mixer: ${LAVALINK_SERVER_SOURCES_MIXER:false}
+      http: ${LAVALINK_SERVER_SOURCES_HTTP:true}
+      local: ${LAVALINK_SERVER_SOURCES_LOCAL:true}
+    
+    filters:
+      volume: true
+      equalizer: true
+      karaoke: true
+      timescale: true
+      tremolo: true
+      vibrato: true
+      distortion: true
+      rotation: true
+      channelmix: true
+      lowpass: true
+      echo: true
+      reverb: true
+      delay: true
+      compression: true
+    
+    analysis:
+      enabled: true
+    
+    bufferDurationMs: 400
+    youtubePlaylistLoadLimit: 6
+    playerUpdateInterval: 5
+    youtubeSearchEnabled: true
+    soundcloudSearchEnabled: true
+    gc-warnings: true
+    trackStuckThresholdMs: 10000
+    useSeekGhosting: true
+    
+    ws:
+      numWorkers: 1
+      bufferSize: 102400
+
+logging:
+  level:
+    root: INFO
+    lavalink: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg%n"
+  file:
+    name: ./logs/lavalink.log
+    max-size: 10MB
+    max-history: 30
+
+spring:
+  application:
+    name: Lavalink
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:lavalink
+    username: sa
+    password: ""
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
