@@ -1,0 +1,58 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "DOCKERFILE",
+    "dockerfile": "./Dockerfile",
+    "context": "."
+  },
+  "deploy": {
+    "startCommand": "java -jar Lavalink.jar",
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 5,
+    "numReplicas": 1,
+    "healthchecks": {
+      "tcp": {
+        "disabled": false
+      }
+    },
+    "timeout": 300
+  },
+  "env": {
+    "LAVALINK_SERVER_PASSWORD": {
+      "description": "🔐 Lavalink server password for bot authentication (CHANGE THIS!)",
+      "value": "youshallnotpass"
+    },
+    "SERVER_PORT": {
+      "description": "🔌 Server listening port (Railway will expose via proxy)",
+      "value": "443"
+    },
+    "LAVALINK_SERVER_SOURCES_YOUTUBE": {
+      "description": "Enable YouTube music source",
+      "value": "true"
+    },
+    "LAVALINK_SERVER_SOURCES_SOUNDCLOUD": {
+      "description": "Enable SoundCloud music source",
+      "value": "true"
+    },
+    "LAVALINK_SERVER_SOURCES_BANDCAMP": {
+      "description": "Enable Bandcamp music source",
+      "value": "true"
+    },
+    "LAVALINK_SERVER_SOURCES_TWITCH": {
+      "description": "Enable Twitch stream source",
+      "value": "true"
+    },
+    "LAVALINK_SERVER_SOURCES_VIMEO": {
+      "description": "Enable Vimeo video source",
+      "value": "true"
+    },
+    "LAVALINK_SERVER_SOURCES_HTTP": {
+      "description": "Enable direct HTTP/HTTPS link source",
+      "value": "true"
+    },
+    "LAVALINK_SERVER_SOURCES_LOCAL": {
+      "description": "Enable local file source",
+      "value": "true"
+    }
+  }
+}
