@@ -10,7 +10,7 @@ services:
       _JAVA_OPTIONS: "-Xmx512M -Xms256M -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:G1NewCollectionHeuristicPercent=35 -XX:G1ReservePercent=20 -XX:G1HeapRegionSize=16M"
       
       # Lavalink configuration
-      SERVER_PORT: 443
+      SERVER_PORT: 8080
       LAVALINK_SERVER_PASSWORD: ${LAVALINK_PASSWORD:-youshallnotpass}
       LAVALINK_SERVER_SOURCES_YOUTUBE: "true"
       LAVALINK_SERVER_SOURCES_BANDCAMP: "true"
@@ -22,7 +22,7 @@ services:
       LAVALINK_SERVER_SOURCES_LOCAL: "true"
     
     ports:
-      - "443:443"
+      - "8080:8080"
     
     volumes:
       # Persistent storage untuk cache dan logs
@@ -33,7 +33,7 @@ services:
       - lavalink-network
     
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:443/info"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/info"]
       interval: 30s
       timeout: 10s
       retries: 3
