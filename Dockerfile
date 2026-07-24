@@ -41,9 +41,9 @@ ENV SERVER_PORT=8080
 ENV LAVALINK_SERVER_PASSWORD=youshallnotpass
 
 # Java optimizations untuk low-latency audio streaming
-# G1GC: Garbage collector untuk minimal pause time
-# Memory: 512MB adalah limit optimal untuk Railway free tier
-ENV _JAVA_OPTIONS="-Xmx512M -Xms256M -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:G1NewCollectionHeuristicPercent=35 -XX:G1ReservePercent=20 -XX:G1HeapRegionSize=16M"
+# FIXED: Removed unsupported G1 options yang tidak tersedia di Eclipse Temurin Alpine JRE 17
+# G1GC dengan MaxGCPauseMillis sudah optimal untuk audio streaming
+ENV _JAVA_OPTIONS="-Xmx512M -Xms256M -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+ParallelRefProcEnabled -XX:+UnlockDiagnosticVMOptions -XX:G1SummarizeRSetStatsPeriod=1"
 
 # Expose port 8080 (Railway standard port)
 EXPOSE 8080
