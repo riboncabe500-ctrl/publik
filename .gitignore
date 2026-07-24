@@ -1,13 +1,17 @@
-# Lavalink data & logs
-lavalink-data/
-data/
-logs/
-*.log
-
-# Environment
-.env
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+*.egg-info/
 .env.local
 .env.*.local
+
+# Build outputs
+build/
+dist/
+*.o
+*.a
+*.so
 
 # IDE
 .vscode/
@@ -17,33 +21,15 @@ logs/
 *~
 .DS_Store
 
-# Node (if applicable)
-node_modules/
-npm-debug.log*
-yarn-error.log*
+# Runtime
+lavalink-data/
+*.log
+logs/
+data/
 
 # Docker
-*.tar
-*.tar.gz
-
-# SSL/TLS
-*.pem
-*.key
-*.cert
-*.p12
-
-# Java
-*.class
-*.jar
-*.war
-target/
-build/
+.dockerignore
 
 # OS
 Thumbs.db
-.directory
-
-# Misc
-*.tmp
-temp/
-cache/
+.DS_Store
