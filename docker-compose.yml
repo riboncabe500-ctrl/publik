@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  lavalink:
+    image: ghcr.io/lavalink-devs/lavalink:latest
+    container_name: lavalink-v4
+    restart: unless-stopped
+    environment:
+      # Java runtime optimization
+      _JAVA_OPTIONS: "-Xmx512M -Xms256M -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:G1NewCollectionHeuristicPercent=35 -XX:G1ReservePercent=20 -XX:G1HeapRegionSize=16M"
+      
+      # Lavalink configuration
+      SERVER_PORT: 443
+      LAVALINK_SERVER_PASSWORD: ${LAVALINK_PASSWORD:-youshallnotpass}
+      LAVALINK_SERVER_SOURCES_YOUTUBE: "true"
+      LAVALINK_SERVER_SOURCES_BANDCAMP: "true"
+      LAVALINK_SERVER_SOURCES_SOUNDCLOUD: "true"
+      LAVALINK_SERVER_SOURCES_TWITCH: "true"
+      LAVALINK_SERVER_SOURCES_VIMEO: "true"
+      LAVALINK_SERVER_SOURCES_MIXER: "false"
+      LAVALINK_SERVER_SOURCES_HTTP: "true"
+      LAVALINK_SERVER_SOURCES_LOCAL: "true"
+    
+    ports:
+      - "443:443"
+    
+    volumes:
+      # Persistent storage untuk cache dan logs
+      - ./lavalink-data:/lavalink/data
+      - ./application.yml:/lavalink/application.yml:ro
+    
+    networks:
+      - lavalink-network
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:443/info"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  lavalink-network:
+    driver: bridge
