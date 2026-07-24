@@ -1,8 +1,8 @@
-# Multi-stage Dockerfile untuk Lavalink v4 - Railway Optimized
-# Designed untuk Railway's Dockerfile builder
-# Ensures 100% compatibility dengan Railway deployment platform
+# Dockerfile untuk Lavalink v4 - Railway Deployment
+# Base Image: Debian Jammy (Ubuntu LTS) - Full audio support
+# Mendukung JDA-NAS native audio library untuk proper encoding
 
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:17-jre-jammy
 
 LABEL maintainer="riboncabe500-ctrl"
 LABEL description="Lavalink v4 Audio Streaming Server - Railway Edition"
@@ -11,12 +11,16 @@ LABEL description="Lavalink v4 Audio Streaming Server - Railway Edition"
 WORKDIR /lavalink
 
 # Install runtime dependencies
-RUN apk add --no-cache \
+# ⚠️ CRITICAL: libgcc, libc, dan audio libraries HARUS ada untuk JDA-NAS
+RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
+    wget \
     ca-certificates \
     tzdata \
-    wget \
-    && rm -rf /var/cache/apk/*
+    libgcc-s1 \
+    libc6 \
+    libstdc++6 \
+    && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
 # Download Lavalink v4.0.8 dari official GitHub release
 RUN echo "⏳ Downloading Lavalink v4.0.8..." && \
@@ -41,8 +45,8 @@ ENV SERVER_PORT=8080
 ENV LAVALINK_SERVER_PASSWORD=youshallnotpass
 
 # Java optimizations untuk low-latency audio streaming
-# FIXED: Removed unsupported G1 options yang tidak tersedia di Eclipse Temurin Alpine JRE 17
-# G1GC dengan MaxGCPauseMillis sudah optimal untuk audio streaming
+# G1GC: Garbage collector untuk minimal pause time
+# Memory: 512MB adalah limit optimal untuk Railway free tier
 ENV _JAVA_OPTIONS="-Xmx512M -Xms256M -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+ParallelRefProcEnabled -XX:+UnlockDiagnosticVMOptions -XX:G1SummarizeRSetStatsPeriod=1"
 
 # Expose port 8080 (Railway standard port)
