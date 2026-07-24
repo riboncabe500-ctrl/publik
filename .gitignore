@@ -1,0 +1,49 @@
+# Lavalink data & logs
+lavalink-data/
+data/
+logs/
+*.log
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Node (if applicable)
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# Docker
+*.tar
+*.tar.gz
+
+# SSL/TLS
+*.pem
+*.key
+*.cert
+*.p12
+
+# Java
+*.class
+*.jar
+*.war
+target/
+build/
+
+# OS
+Thumbs.db
+.directory
+
+# Misc
+*.tmp
+temp/
+cache/
