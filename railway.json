@@ -2,52 +2,49 @@
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
     "builder": "DOCKERFILE",
-    "dockerfile": "./Dockerfile",
-    "context": "."
+    "dockerfile": "./Dockerfile"
   },
   "deploy": {
     "startCommand": "java -jar Lavalink.jar",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 5,
-    "numReplicas": 1,
-    "healthchecks": {
-      "tcp": {
-        "disabled": false
-      }
-    },
     "timeout": 300
   },
   "env": {
-    "LAVALINK_SERVER_PASSWORD": {
-      "description": "🔐 Lavalink server password for bot authentication (CHANGE THIS!)",
-      "value": "youshallnotpass"
+    "PORT": {
+      "description": "🔌 Server port (Railway uses this, not SERVER_PORT)",
+      "value": "8080"
     },
     "SERVER_PORT": {
-      "description": "🔌 Server listening port (Railway will expose via proxy)",
-      "value": "443"
+      "description": "🔌 Lavalink server port (must match PORT above)",
+      "value": "8080"
+    },
+    "LAVALINK_SERVER_PASSWORD": {
+      "description": "🔐 Lavalink authentication password - CHANGE THIS IMMEDIATELY!",
+      "value": "youshallnotpass"
     },
     "LAVALINK_SERVER_SOURCES_YOUTUBE": {
-      "description": "Enable YouTube music source",
+      "description": "Enable YouTube source",
       "value": "true"
     },
     "LAVALINK_SERVER_SOURCES_SOUNDCLOUD": {
-      "description": "Enable SoundCloud music source",
+      "description": "Enable SoundCloud source",
       "value": "true"
     },
     "LAVALINK_SERVER_SOURCES_BANDCAMP": {
-      "description": "Enable Bandcamp music source",
+      "description": "Enable Bandcamp source",
       "value": "true"
     },
     "LAVALINK_SERVER_SOURCES_TWITCH": {
-      "description": "Enable Twitch stream source",
+      "description": "Enable Twitch source",
       "value": "true"
     },
     "LAVALINK_SERVER_SOURCES_VIMEO": {
-      "description": "Enable Vimeo video source",
+      "description": "Enable Vimeo source",
       "value": "true"
     },
     "LAVALINK_SERVER_SOURCES_HTTP": {
-      "description": "Enable direct HTTP/HTTPS link source",
+      "description": "Enable HTTP/HTTPS direct links",
       "value": "true"
     },
     "LAVALINK_SERVER_SOURCES_LOCAL": {
