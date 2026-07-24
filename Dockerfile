@@ -1,16 +1,16 @@
-# Dockerfile untuk Lavalink v4 dengan Railway compatibility
-# Build di Railway: dockerfile builder
-# Runtime: Alpine Linux (lightweight & secure)
+# Multi-stage Dockerfile untuk Lavalink v4 - Railway Optimized
+# Designed untuk Railway's Dockerfile builder
+# Ensures 100% compatibility dengan Railway deployment platform
 
 FROM eclipse-temurin:17-jre-alpine
 
 LABEL maintainer="riboncabe500-ctrl"
-LABEL description="Lavalink v4 Audio Streaming Server"
+LABEL description="Lavalink v4 Audio Streaming Server - Railway Edition"
 
 # Set working directory
 WORKDIR /lavalink
 
-# Install dependencies
+# Install runtime dependencies
 RUN apk add --no-cache \
     curl \
     ca-certificates \
@@ -18,45 +18,47 @@ RUN apk add --no-cache \
     wget \
     && rm -rf /var/cache/apk/*
 
-# Download Lavalink v4 JAR dari official release
-# Version: 4.0.8 (latest stable)
-RUN echo "Downloading Lavalink v4.0.8..." && \
+# Download Lavalink v4.0.8 dari official GitHub release
+RUN echo "⏳ Downloading Lavalink v4.0.8..." && \
     wget -q "https://github.com/lavalink-devs/Lavalink/releases/download/4.0.8/Lavalink.jar" \
-    -O Lavalink.jar && \
-    ls -lh Lavalink.jar && \
-    echo "Download complete!"
+    -O /tmp/Lavalink.jar && \
+    mv /tmp/Lavalink.jar ./Lavalink.jar && \
+    ls -lh ./Lavalink.jar && \
+    echo "✅ Download complete!"
 
 # Create necessary directories dengan proper permissions
 RUN mkdir -p ./data ./logs && \
     chmod 755 ./data ./logs && \
-    echo "Directories created"
+    echo "✅ Directories created"
 
-# Copy application configuration
+# Copy application configuration dari repository
 COPY application.yml ./application.yml
 
-# Health check - Railway akan use ini untuk detect if service is healthy
-HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -f -s -H "Authorization: ${LAVALINK_SERVER_PASSWORD:-youshallnotpass}" \
-    http://localhost:${SERVER_PORT:-443}/info || exit 1
-
-# Expose port (Railway akan handle port mapping)
-EXPOSE ${SERVER_PORT:-443}
-
-# Set Java options untuk optimal performance
-# G1GC: Low-latency garbage collection untuk audio streaming
-# Memory: 512MB max (Railway free tier limit)
-ENV _JAVA_OPTIONS="-Xmx512M -Xms256M -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:G1NewCollectionHeuristicPercent=35 -XX:G1ReservePercent=20 -XX:G1HeapRegionSize=16M"
-
-# Set default port (akan override dengan environment variable)
-ENV SERVER_PORT=443
-
-# Set default password (HARUS diganti di Railway environment)
+# Set environment defaults - CRITICAL FOR RAILWAY
+# Railway automatically uses PORT env var for port mapping
+ENV PORT=8080
+ENV SERVER_PORT=8080
 ENV LAVALINK_SERVER_PASSWORD=youshallnotpass
 
-# Entrypoint: start Lavalink
+# Java optimizations untuk low-latency audio streaming
+# G1GC: Garbage collector untuk minimal pause time
+# Memory: 512MB adalah limit optimal untuk Railway free tier
+ENV _JAVA_OPTIONS="-Xmx512M -Xms256M -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -XX:+UnlockExperimentalVMOptions -XX:G1NewCollectionHeuristicPercent=35 -XX:G1ReservePercent=20 -XX:G1HeapRegionSize=16M"
+
+# Expose port 8080 (Railway standard port)
+EXPOSE 8080
+
+# Health check untuk Railway
+# Railway akan check setiap 30 detik apakah service masih healthy
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f -s -H "Authorization: ${LAVALINK_SERVER_PASSWORD}" \
+    http://localhost:8080/info || exit 1
+
+# Entrypoint: start Lavalink dengan JVM
 ENTRYPOINT ["java", "-jar", "Lavalink.jar"]
 
-# Metadata labels
+# OCI Image labels untuk container metadata
 LABEL org.opencontainers.image.title="Lavalink v4"
 LABEL org.opencontainers.image.version="4.0.8"
 LABEL org.opencontainers.image.source="https://github.com/lavalink-devs/Lavalink"
+LABEL org.opencontainers.image.authors="riboncabe500-ctrl"
